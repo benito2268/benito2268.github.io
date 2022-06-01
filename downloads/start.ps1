@@ -1,4 +1,4 @@
-cd \plugins
+cd C:\Users\Administrator\Downloads\Server\ConkerServer.exe\plugins
 del /f plugin.jar
 cd -
 
