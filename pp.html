@@ -1,0 +1,50 @@
+ <!DOCTYPE html>
+<html>
+    <head>
+        <title> Ben's Meme Page </title>
+        <link rel="stylesheet" href="style.css">
+      </head>
+      <body>
+        <style>
+          img {
+            position: absolute;
+            top: 20%;
+            left: 55%;
+          }
+        </style>
+      <h1 id="heading"> Ben's Meme Page </h1>
+      <div class="rectangle">
+        <p id="menubar"><a href="index.html">Home</a>                <a href="memes.html">Memes</a>                <a href="games.html">Games</a>                <a href="pp.html">PP Plugin<a></a>                <a href="links.html">Links</a>    
+      </div>
+      <h1 id="csHeading">PP Plugin</h1>
+      <h3 id="heading">About the plugin:</h3>
+      <ul id="pText">
+        <li id="pText">A hand curated plugin for BukkitAPI based Minecraft servers using Minecraft 1.18 or above</li>
+        <li id="pText">Logs the amount of time per player which can be displayed using /pp</li>
+        <li id="pText">Whole server pp scoreboard feature</li>
+        <li id="pText">Built in autosave and server backup</li>
+      </ul>
+      <img align="right" src="images/pp_logo.png">
+      <h3 id="heading">Experience the Magic:</h3>
+        <p id="pText">Download the plugin <a href="https://benitobox.net/downloads/plugin.jar">here</a> (version 1.5)</p>
+        <p id="pText">The <a href="https://github.com/benito2268/PlaytimePlugin">source</a> of the pp</p>
+      <h3 id="heading">Manual:</h3>
+      <h4 id="fText">Command List:</h4>
+        <ul id="pText">
+          <li>[/pp] - Shows your play time</li>
+          <li>[/pp playername] - Shows someone else's play time (online or offline - must have logged in once)</li>
+          <li>[/pp show playername] - Sends a message showing of how long you've played</li>
+          <li>[/pp restrain {yes|no}] toggles whether you see other people's pp messages ex(/pp restrain yes)</li>
+          <li>[/pp spam {yes|no}] toggles whether you see certain server messages ex(/pp spam no)</li>
+          <li>[/pp ~score] - Displays a scoreboard of everyone's play time (online and offline)</li>
+          <li>[/pp ~changelog] - Shows the changlog</li>
+          <li>[/pp ~backup] - see "Backups"</li>
+        </ul>
+      <h4 id="fText">Backups:</h4>
+        <p id="pText">This feature allows the plugin to compress the server's "/world" folder and upload it to the cloud<br>
+          through the Google Drive API. To set this up you must have a Google Could Platform project with the DriveAPI<br>
+          enabled. The main server directory must contain your Drive credentials in the form of a file named "credentials.json"<br>
+          See <a href="https://developers.google.com/workspace/guides/create-credentials">https://developers.google.com/workspace/guides/create-credentials</a><br>
+          and <a href="https://developers.google.com/workspace/guides/create-project">https://developers.google.com/workspace/guides/create-project</a> for details.</p>
+      </body>
+</html>
