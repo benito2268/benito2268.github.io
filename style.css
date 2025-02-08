@@ -1,6 +1,7 @@
 body {
     background-color: aqua;
     text-align: left;
+    cursor: url(images/fish/bobber.gif), auto;
   }
   #heading {
     color:rgb(24, 225, 51);
@@ -48,4 +49,8 @@ body {
 
   a {
     color: coral;
+  }
+  
+  area, * {
+    cursor: url(images/fish/bobber.gif), auto;
   }
