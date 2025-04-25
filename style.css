@@ -7,12 +7,6 @@ body {
     color:rgb(24, 225, 51);
     text-decoration: underline;
   }
-  .rectangle {
-    height: 50px;
-    width: 100vw;
-    background-color: aquamarine;
-    align-items: center;
-  }
   #menubar{
     white-space: pre;
     font-size: 24px;
@@ -46,9 +40,58 @@ body {
     font-family: cursive;
     font-size: large;
   }
+  .rectangle {
+    height: 50px;
+    width: 100vw;
+    background-color: aquamarine;
+    align-items: center;
+  }
+  .container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); /* Grid with auto-columns */
+    gap:10px;
+    padding: 10px;
+    justify-items: center; /* Centers cards in their grid cells */
+  }
+  .card {
+    width: 300px;
+    background-color:aquamarine;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin: 20px;
+    transition: transform 0.3s ease-in-out;
+  }
+  .card-content {
+    color:coral;
+    font-family: cursive;
+    padding-left:15px;
+  }
+  .card-title {
+  }
+  .card-info {
+    font-size: small;
+  }
+  .card-text {
+
+  }
+  .card-button {
+    font-family: cursive;
+    font-size: 12px;
+    background-color: coral;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    position:relative;
+    left:20%;
+    bottom: 5%;
+  }
 
   a {
     color: coral;
+    font-family: cursive;
   }
   
   area, * {
