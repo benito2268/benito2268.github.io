@@ -1,0 +1,107 @@
+/* ===== Base Styling ===== */
+@font-face {
+  font-family: 'IBM';
+  src: url('./fonts/ibm_bios.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+a {
+    color: #FFC966;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: 'IBM', monospace;
+  image-rendering: pixelated;
+  -webkit-font-smoothing: none;
+  overflow-x: hidden;
+  transition: background 1s ease-in-out;
+  background-color: #1E1E2F;
+}
+
+html { padding-bottom: 50px;}
+
+hr { color: #555566 }
+
+#heading {
+    color:#FFC966;
+    text-decoration: underline;
+    padding-left: 10px;
+}
+
+#subheading {
+    color:#8FBC8F;
+    padding-left: 10px;
+    font-size: small;
+}
+
+#menubar{
+    white-space: pre;
+    font-size: 24px;
+    font-family: 'IBM', monospace;
+    padding-left: 10px;
+    padding-top: 10px;
+}
+
+.temp {
+    color: #FFC966;
+    font-size: 40px;
+    padding-left:15px;
+}
+
+.main-data {
+    font-size: large;
+    padding-left: 15px;
+}
+
+.aux-data {
+    font-size: medium;
+    padding-left: 15px;
+}
+
+.rectangle {
+    height: 50px;
+    width: 100vw;
+    background-color: #2A2A3D;
+    align-items: center;
+}
+
+.credits {
+    color:rgb(24, 225, 51);
+    padding-left: 10px;
+    font-size: small;
+}
+
+/* ===== Example Card (optional, for context) ===== */
+.card {
+  position: relative;
+  z-index: 1; /* make sure it’s above stars */
+  background-color: #2A2A3D;
+  border-radius: 8px;
+  border: 2px solid #555566;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  margin: 20px;
+  padding: 10px;
+  width: fit-content;
+  min-width: 300px;
+  transition: transform 0.3s ease-in-out;
+  color: #8FBC8F;
+}
+
+.card-content {
+    padding-left:15px;
+}
+
+.card-title {
+    color:#FFC966;
+    font-size: large;
+    font-weight: bold;
+    padding-left:15px;
+}
+
+.card-info {
+    font-size: small;
+}

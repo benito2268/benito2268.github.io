@@ -2,7 +2,9 @@ body {
     background-color: aqua;
     text-align: left;
     cursor: url(images/fish/bobber.gif), auto;
-  }
+    padding-bottom: 50px;
+}
+
   #heading {
     color:rgb(24, 225, 51);
     text-decoration: underline;
@@ -54,26 +56,33 @@ body {
     justify-items: center; /* Centers cards in their grid cells */
   }
   .card {
-    width: 300px;
-    background-color:aquamarine;
+    min-width: 300px;
+    width: auto;
+    max-width: fit-content;
+    background-color: white;
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
     margin: 20px;
     transition: transform 0.3s ease-in-out;
+    border: 2px solid grey;
+    padding-right: 10px;
   }
+
   .card-content {
-    color:coral;
-    font-family: cursive;
+    color:black;
+    font-family: Consolas, monospace;
     padding-left:15px;
   }
   .card-title {
+    color:black;
+    font-size: 20px;
+    font-weight: bold;
+    font-family: Consolas, monospace;
+    padding-left:15px;
   }
   .card-info {
     font-size: small;
-  }
-  .card-text {
-
   }
   .card-button {
     font-family: cursive;

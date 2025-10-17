@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> Ben's Weather Page </title>
+    <link rel="stylesheet" href="weather.css">
+    <script src="weather.js" defer></script>
+  </head>
+  <body>
+      <h1 id="heading"> Ben's Weather Page </h1>
+      <p id="subheading"> Because I want to look at the weather without the ads</p>
+      
+        <div class="rectangle">
+        <p id="menubar"><a href="index.html">Home</a>     <a href="memes.html">Memes</a>     <a href="fish.html">Fish</a>     <a href="weather.html">Weather<a></a>     <a href="links.html">Links</a>  
+        <div id="locationInfo" class="card"></div>
+        <div id="weatherForecast" class="container">
+            
+            <div id="currentWeather" class="card">
+                <p class="card-title"> Current Weather </p> 
+            </div>
+
+            <div id="forecast" class="card">
+                <p class="card-title"> Weather Forecast </p>
+            </div>
+
+        </div>
+
+        <div id="radarContainer" class="card">
+          <h2 class="card-title"> Radar</h2>
+          <iframe class="card-content"
+            src="https://radar.weather.gov/"
+            width="800"
+            height="600"
+          ></iframe>
+        </div>
+
+        <p class="credits">
+          Font: IBM BIOS (1981) by VileR — licensed under CC BY-SA 4.0, via <a href="https://int10h.org/oldschool-pc-fonts/">int10h.org</a> <br/>
+          All data is collected from the <a href="https://api.weather.gov">National Weather Service API</a> <br/>
+          Page by Ben Staehle (styled to look sort of like an old IBM terminal)<br/>
+        </p> 
+  </body>
+</html>
