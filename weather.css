@@ -22,8 +22,6 @@ html, body {
   background-color: #1E1E2F;
 }
 
-html { padding-bottom: 50px;}
-
 hr { color: #555566 }
 
 #heading {
@@ -73,6 +71,10 @@ hr { color: #555566 }
     color:rgb(24, 225, 51);
     padding-left: 10px;
     font-size: small;
+
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 /* ===== Example Card (optional, for context) ===== */
@@ -91,8 +93,35 @@ hr { color: #555566 }
   color: #8FBC8F;
 }
 
+.container {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  overflow-x: auto;     /* enables horizontal scrolling */
+  scroll-behavior: smooth;
+}
+
+.container::-webkit-scrollbar {
+  height: 8px;          /* small horizontal scrollbar */
+}
+
+.container::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+}
+
+.container > * {
+  flex: 0 0 300px;       /* each card has fixed width (like your grid minmax) */
+}
+
 .card-content {
     padding-left:15px;
+}
+
+.fcast-content {
+    padding-left: 15px;
+    font-size: small;
+    color: #8FBC8F;
 }
 
 .card-title {

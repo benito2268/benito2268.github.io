@@ -42,17 +42,54 @@ async function populateCurrentWeather() {
         // temperature
         currCard.append(
           el("h1", {className: "temp", textContent: `${currWeather.tempF}°F`}),
-          el("img", {src : `images/weather/${pickIconKey(currWeather.condition)}`}),
+          el("img", {src : `images/weather/${pickIconKey(currWeather.condition, isNight(currWeather.timestamp))}`}),
           el("h2", {className: "main-data", textContent: `${currWeather.condition}`, style: "color: #FFC966;"}),
           el("hr"),
           el("h3", {className: "aux-data", textContent: `Humidity: ${currWeather.relHum}%`}),
           el("h3", {className: "aux-data", textContent: `Dew Point: ${currWeather.dewpointF}°F`}),
-          el("h3", {className: "aux-data", textContent: `Wind: ${currWeather.windDir} ${currWeather.windMph}MPH`}),
+          el("h3", {className: "aux-data", textContent: `Wind: ${currWeather.windDir} ${currWeather.windMph != 0 ? (currWeather.windMph + " MPH") : "Calm"}`}),
         );
     });
 
     currCard.innerText = "Loading...";
     locCard.innerText = "Loading...";
+}
+
+function populateForecast() {
+    let stationData = {};
+    let locCard = document.getElementById("locationInfo");
+    let currCard = document.getElementById("currentWeather");
+
+    navigator.geolocation.getCurrentPosition(async (position) => {
+        stationData = await getStationData(
+          position.coords.latitude,
+          position.coords.longitude
+        );
+
+        //popoulate the forcast
+        getDailyForecast(stationData.forcastURL);
+    });
+}
+
+function genForcastCard(parentId, pair, cardEl) {
+    if (pair.day ^ pair.night) {
+        // one is valid but not both
+    } else if (pair.day && pair.night) {
+        // both are valid - create a top half for day and bottom for night
+        cardEl.append(
+            el("h1", { "classList" : "card-title", "textContent" : `${pair.day.name}` }),
+            el("h2", { "classList" : "fcast-content", "textContent" : `${pair.day.shortForecast}` }),
+            el("h2", { "classList" : "card-title", "textContent" : `${pair.day.temperature}°F`, "style" : "color: #E9967A;"}),
+            el("hr"),
+            el("h1", { "classList" : "card-title", "textContent" : `${pair.night.name}` }),
+            el("h2", { "classList" : "fcast-content", "textContent" : `${pair.night.shortForecast}` }),
+            el("h2", { "classList" : "card-title", "textContent" : `${pair.night.temperature}°F`, "style" : "color: #7BAFD4;"}),
+        );
+
+    } else {
+        // we have a problem :P
+        return cardEl.append(el("p", { "textContent" : "oops couldn't load this day :(" }));
+    }
 }
 
 // =========================================================================
@@ -105,6 +142,7 @@ async function getCurrentCond(station) {
 
         condition : rawData.textDescription,
         name      : rawData.stationName,
+        timestamp : rawData.timestamp,
     }
 
     return currCond;
@@ -119,6 +157,19 @@ async function getDailyForecast(URL) {
     .then(data => {
         forecast = pairForecasts(data.properties.periods);  
     });
+
+    let fcastContainer = document.getElementById("forecast");
+
+    // populate the forcast
+    for (pair of forecast) {
+        const id = `forcast${pair.day ? pair.day.name : pair.night.name}`;
+
+        console.log(pair);
+
+        let newCard = el("div", { "classList" : "card", "id" : id });
+        fcastContainer.append(newCard);
+        genForcastCard(id, pair, newCard);
+    }
 
     return forecast;
 }
@@ -154,6 +205,11 @@ function pairForecasts(periods) {
 }
 
 // helper functions to convert metric to US units
+function isNight(timestamp) {
+    const date = new Date(timestamp);
+    return (date.getHours() < 6 || date.getHours() >= 20);
+}
+
 function CtoF(tempC) {
     return Math.round(tempC * (9/5) + 32);
 }
@@ -177,12 +233,19 @@ function PaToMmhg(pressPa) {
      return (pressPa / 133.3);
 }
 
-function pickIconKey(forecastText) {
+function pickIconKey(forecastText, isNighttime) {
   const text = forecastText.toLowerCase();
   for (const entry of weatherIconMap) {
     for (const kw of entry.keywords) {
       if (text.includes(kw)) {
-        return entry.iconKey;
+        let result = entry.iconKey;
+
+        // make it a little moon for nighttime
+        if (isNighttime && (result === "sun_icon.png" || result === "partly_cloudy_icon.png")) {
+          return (`${result.split('.')[0]}_night.png`);
+        } else {
+          return result;
+        }
       }
     }
   }
@@ -255,14 +318,4 @@ const weatherIconMap = [
 // =========================================================================
 
 populateCurrentWeather();
-
-// toggle the background
-/*const hour = new Date().getHours();
-if (hour >= 6 && hour < 18) {
-  document.body.classList.remove('night');
-} else {
-  document.body.classList.add('night');
-}
-  */
-
-document.body.classList.add('night');
+populateForecast();
