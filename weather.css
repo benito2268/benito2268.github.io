@@ -93,6 +93,20 @@ hr { color: #555566 }
   color: #8FBC8F;
 }
 
+.card-row span {
+  font-size: 1rem;
+  color: #8FBC8F;
+}
+
+.card-row {
+}
+
+.fcast-img {
+    padding-left:15px;
+    width: 64px;
+    height: 64px;
+}
+
 .container {
   display: flex;
   gap: 10px;

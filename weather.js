@@ -6,6 +6,38 @@
 // Weather Page Functions
 // =========================================================================
 
+// global state object
+const state = {
+    location : null,
+    stationData : null,
+    currentWeather : null,
+    forecast : null,
+};
+
+async function fetchWeather() {
+  const position = await new Promise((resolve, reject) =>
+    navigator.geolocation.getCurrentPosition(resolve, reject)
+  );
+
+  const { latitude, longitude } = position.coords;
+  state.location = { lat: latitude, lon: longitude };
+
+  state.stationData = await getStationData(latitude, longitude);
+
+  const [current, forecast] = await Promise.all([
+    getCurrentCond(state.stationData.name),
+    fetchForecast(state.stationData.forcastURL)
+  ]);
+
+  state.currentWeather = current;
+  state.forecast = forecast;
+
+  // actually do the population
+  populateCurrentWeather();
+  populateDailyForecast();
+
+  console.log("Weather data loaded:", state);
+}
 
 function el(tag, props = {}, children = []) {
   const e = document.createElement(tag);
@@ -17,78 +49,73 @@ function el(tag, props = {}, children = []) {
 }
 
 async function populateCurrentWeather() {
-    let stationData = {};
+    const stationData = state.stationData;
+    const currWeather = state.currentWeather;
     let locCard = document.getElementById("locationInfo");
     let currCard = document.getElementById("currentWeather");
 
-    navigator.geolocation.getCurrentPosition(async (position) => {
-        stationData = await getStationData(
-          position.coords.latitude,
-          position.coords.longitude
-        );
+    currCard.innerText = "";
+    locCard.innerText = "";
 
-        const currWeather = await getCurrentCond(stationData.name);
+    // name
+    locCard.append(
+      el("h2", {className: "card-content", textContent: `${currWeather.name} (${stationData.name})`})
+    );
 
-        currCard.innerText = "";
-        locCard.innerText = "";
-
-        // name
-        locCard.append(
-          el("h2", {className: "card-content", textContent: `${currWeather.name} (${stationData.name})`})
-        );
-
-        console.log(currWeather);
-
-        // temperature
-        currCard.append(
-          el("h1", {className: "temp", textContent: `${currWeather.tempF}°F`}),
-          el("img", {src : `images/weather/${pickIconKey(currWeather.condition, isNight(currWeather.timestamp))}`}),
-          el("h2", {className: "main-data", textContent: `${currWeather.condition}`, style: "color: #FFC966;"}),
-          el("hr"),
-          el("h3", {className: "aux-data", textContent: `Humidity: ${currWeather.relHum}%`}),
-          el("h3", {className: "aux-data", textContent: `Dew Point: ${currWeather.dewpointF}°F`}),
-          el("h3", {className: "aux-data", textContent: `Wind: ${currWeather.windDir} ${currWeather.windMph != 0 ? (currWeather.windMph + " MPH") : "Calm"}`}),
-        );
-    });
-
-    currCard.innerText = "Loading...";
-    locCard.innerText = "Loading...";
-}
-
-function populateForecast() {
-    let stationData = {};
-    let locCard = document.getElementById("locationInfo");
-    let currCard = document.getElementById("currentWeather");
-
-    navigator.geolocation.getCurrentPosition(async (position) => {
-        stationData = await getStationData(
-          position.coords.latitude,
-          position.coords.longitude
-        );
-
-        //popoulate the forcast
-        getDailyForecast(stationData.forcastURL);
-    });
+    // temperature
+    currCard.append(
+      el("h1", {className: "temp", textContent: `${currWeather.tempF}°F`}),
+      el("img", {src : `images/weather/${pickIconKey(currWeather.condition, isNight(currWeather.timestamp))}`}),
+      el("h2", {className: "main-data", textContent: `${currWeather.condition}`, style: "color: #FFC966;"}),
+      el("hr"),
+      el("h3", {className: "aux-data", textContent: `Humidity: ${currWeather.relHum}%`}),
+      el("h3", {className: "aux-data", textContent: `Dew Point: ${currWeather.dewpointF}°F`}),
+      el("h3", {className: "aux-data", textContent: `Wind: ${currWeather.windDir} ${currWeather.windMph != 0 ? (currWeather.windMph + " MPH") : "Calm"}`}),
+    );
 }
 
 function genForcastCard(parentId, pair, cardEl) {
-    if (pair.day ^ pair.night) {
-        // one is valid but not both
-    } else if (pair.day && pair.night) {
+    if (pair.day && pair.night) {
         // both are valid - create a top half for day and bottom for night
         cardEl.append(
             el("h1", { "classList" : "card-title", "textContent" : `${pair.day.name}` }),
             el("h2", { "classList" : "fcast-content", "textContent" : `${pair.day.shortForecast}` }),
-            el("h2", { "classList" : "card-title", "textContent" : `${pair.day.temperature}°F`, "style" : "color: #E9967A;"}),
+            el("img", { "classList" : "fcast-img", "src" : `images/weather/${pickIconKey(pair.day.shortForecast)}`}),
+            el("span", { "classList" : "card-row" }, [
+              el("h2", { "classList" : "card-title", "textContent" : `${pair.day.temperature}°F`, "style" : "color: #E9967A;"}),
+              el("h2", { "classList" : "fcast-content", "textContent" : `${pair.day.probabilityOfPrecipitation.value}% chance precip.`}),
+            ]),
             el("hr"),
             el("h1", { "classList" : "card-title", "textContent" : `${pair.night.name}` }),
             el("h2", { "classList" : "fcast-content", "textContent" : `${pair.night.shortForecast}` }),
-            el("h2", { "classList" : "card-title", "textContent" : `${pair.night.temperature}°F`, "style" : "color: #7BAFD4;"}),
+            el("span", { "classList" : "card-row" }, [
+              el("h2", { "classList" : "card-title", "textContent" : `${pair.night.temperature}°F`, "style" : "color: #7BAFD4;"}),
+              el("h2", { "classList" : "fcast-content", "textContent" : `${pair.night.probabilityOfPrecipitation.value}% chance precip.`}),
+            ]),
         );
 
     } else {
-        // we have a problem :P
-        return cardEl.append(el("p", { "textContent" : "oops couldn't load this day :(" }));
+        if (!pair.day && !pair.night) {
+            // we have a problem :P
+            cardEl.append(el("p", { "textContent" : "oops couldn't load this day :(" }));
+            return;
+        }
+
+        // generate a full card for whichever it is
+        let period = (pair.day ?? pair.night);
+        let isNight = period == pair.night;
+
+        cardEl.append(
+            el("h1", { "classList" : "card-title", "textContent" : `${period.name}` }),
+            el("h2", { "classList" : "fcast-content", "textContent" : `${period.shortForecast}` }),
+            el("img", { "classList" : "fcast-img", "src" : `images/weather/${pickIconKey(period.shortForecast, isNight)}`}),
+            el("span", { "classList" : "card-row" }, [
+              el("h2", { "classList" : "card-title", "textContent" : `${period.temperature}°F`, "style" : `color: ${isNight ? "#7BAFD4" : "#E9967A"};`}),
+              el("h2", { "classList" : "fcast-content", "textContent" : `${period.probabilityOfPrecipitation.value}% chance precip.`}),
+            ]),
+            el("p", { "classList" : "fcast-content", "textContent" : `${period.detailedForecast}`})
+        );
+
     }
 }
 
@@ -149,8 +176,8 @@ async function getCurrentCond(station) {
 }
 
 // returns the 7 day forecast
-async function getDailyForecast(URL) {
-    let forecast = [];
+async function fetchForecast(URL) {
+   let forecast = [];
 
     await fetch(URL)
     .then(resp => resp.json())
@@ -158,10 +185,14 @@ async function getDailyForecast(URL) {
         forecast = pairForecasts(data.properties.periods);  
     });
 
+    return forecast;
+}
+
+function populateDailyForecast() {
     let fcastContainer = document.getElementById("forecast");
 
     // populate the forcast
-    for (pair of forecast) {
+    for (pair of state.forecast) {
         const id = `forcast${pair.day ? pair.day.name : pair.night.name}`;
 
         console.log(pair);
@@ -317,5 +348,4 @@ const weatherIconMap = [
 // Setup function calls
 // =========================================================================
 
-populateCurrentWeather();
-populateForecast();
+fetchWeather();
