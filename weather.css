@@ -49,6 +49,10 @@ form {
     padding-top: 10px;
 }
 
+#forecast {
+  background-color: #799fbf;
+}
+
 .temp {
     color: #FFC966;
     font-size: 40px;

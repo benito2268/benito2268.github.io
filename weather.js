@@ -57,6 +57,7 @@ async function populateCurrentWeather() {
 
     // temperature
     currCard.append(
+      el("p", {className: "card-title", "textContent" : "Current Weather"}),
       el("h1", {className: "temp", textContent: `${currWeather.tempF}°F`}),
       el("img", {src : `images/weather/${pickIconKey(currWeather.condition, isNight(currWeather.timestamp))}`}),
       el("h2", {className: "main-data", textContent: `${currWeather.condition}`, style: "color: #FFC966;"}),
@@ -286,18 +287,22 @@ const weatherIconMap = [
     iconKey: "storm_icon.png",
     keywords: ["thunderstorm", "t-storm", "thunderstorms"]
   },
-  //{
-  //  iconKey: "hail",
-  //  keywords: ["hail"]
-  //},
-  //{
-  //  iconKey: "sleet",
-  //  keywords: ["sleet", "ice pellets", "freezing rain", "freezing drizzle"]
-  //},
-  //{
-  //  iconKey: "snow",
-  //  keywords: ["snow", "snow showers", "blizzard", "flurries"]
-  //},
+  {
+    iconKey: "hail_icon.png",
+    keywords: ["hail"]
+  },
+  {
+    iconKey: "sleet_icon.png",
+    keywords: ["sleet", "ice pellets", "freezing rain", "freezing drizzle"]
+  },
+  {
+    iconKey: "light_snow_icon.png",
+    keywords: ["flurries", "light snow"]
+  },
+  {
+    iconKey: "snow_icon.png",
+    keywords: ["snow", "snow showers", "blizzard", "blowing snow"]
+  },
   {
     iconKey: "light_rain_icon.png",
     keywords: ["light rain", "drizzle"]
@@ -306,18 +311,14 @@ const weatherIconMap = [
     iconKey: "rain_icon.png",
     keywords: ["rain", "showers", "heavy rain"]
   },
-  //{
-  //  iconKey: "fog",
-  //  keywords: ["fog", "dense fog", "patchy fog", "areas fog"]
-  //},
-  //{
-  //  iconKey: "mist",
-  //  keywords: ["mist"]   // if you have a “mist” icon
-  //},
-  //{
-  //  iconKey: "wind",
-  //  keywords: ["wind", "blowing snow", "blowing dust", "blowing sand"]
-  //},
+  {
+    iconKey: "fog_icon.png",
+    keywords: ["fog", "dense fog", "patchy fog", "areas fog", "haze", "smoke", "patchy haze", "areas smoke", "mist"]
+  },
+  {
+    iconKey: "wind_icon.png",
+    keywords: ["wind", "blowing dust", "blowing sand"]
+  },
   {
     iconKey: "cloud_icon.png",
     keywords: ["cloudy", "mostly cloudy", "overcast", "mostly overcast"]
@@ -330,18 +331,14 @@ const weatherIconMap = [
     iconKey: "sun_icon.png",
     keywords: ["sunny", "clear", "mostly clear", "becoming sunny"]
   },
-  //{
-  //  iconKey: "haze",
-  //  keywords: ["haze", "smoke", "patchy haze", "areas smoke"]
-  //},
-  //{
-  //  iconKey: "frost",
-  //  keywords: ["frost", "patchy frost"]
-  //},
+  {
+    iconKey: "frost_icon.png",
+    keywords: ["frost", "patchy frost", "widespread frost", "cold"]
+  },
   
   // fallback (default)
   {
-    iconKey: "missing.png",
+    iconKey: "missing",
     keywords: []
   }
 ];

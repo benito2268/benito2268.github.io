@@ -12,6 +12,7 @@
       
         <div class="rectangle">
         <p id="menubar"><a href="index.html">Home</a>     <a href="memes.html">Memes</a>     <a href="fish.html">Fish</a>     <a href="weather.html">Weather<a></a>     <a href="links.html">Links</a>  
+        </div>
 
         <div id="locationInfo" class="card">
           <form id="defaultCityForm">
@@ -39,11 +40,22 @@
                 <p class="card-title"> Current Weather </p> 
                 <!-- forcast cards generated in JS go here -->
             </div>
+
+            <div id="currentDetails" class="card">
+                <p class="card-title"> Details </p> 
+                <!-- forcast cards generated in JS go here -->
+            </div>
+
         </div>
 
-        <div id="forecast" class="container">
+        <hr>
+
+        <p class="card-title">7 Day Forecast</p>
+        <div id="forecast" class="container" style="margin-bottom: 30px;">
           <!-- forcast cards generated in JS go here -->
         </div>
+
+        <hr>
 
         <div id="radarContainer" class="card">
           <h2 class="card-title"> U.S. Radar</h2>
@@ -55,9 +67,14 @@
         </div>
 
         <p class="credits">
+          Site and graphics by Ben Staehle (styled to look sort of like an old IBM terminal)<br/><br/>
+          
+          Privacy is important! This site does not use location services.<br/><br/>
+
+          Weather data is collected from the <a href="https://api.weather.gov">National Weather Service API</a> <br/>
+          Geoloction data is collected from the <a href="https://www.openstreetmap.org/#map=5/38.01/-95.84">OpenStreetMap API</a><br/>
+
           Font: IBM BIOS (1981) by VileR — licensed under CC BY-SA 4.0, via <a href="https://int10h.org/oldschool-pc-fonts/">int10h.org</a> <br/>
-          All data is collected from the <a href="https://api.weather.gov">National Weather Service API</a> <br/>
-          Page by Ben Staehle (styled to look sort of like an old IBM terminal)<br/>
         </p> 
   </body>
 </html>
