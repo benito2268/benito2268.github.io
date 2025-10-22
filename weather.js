@@ -15,18 +15,9 @@ const state = {
 };
 
 async function fetchWeather() {
-  const position = await new Promise((resolve, reject) =>
-    navigator.geolocation.getCurrentPosition(resolve, reject)
-  );
-
-  const { latitude, longitude } = position.coords;
-  state.location = { lat: latitude, lon: longitude };
-
-  state.stationData = await getStationData(latitude, longitude);
-
   const [current, forecast] = await Promise.all([
     getCurrentCond(state.stationData.name),
-    fetchForecast(state.stationData.forcastURL)
+    fetchForecast(state.stationData.forecastURL)
   ]);
 
   state.currentWeather = current;
@@ -54,8 +45,10 @@ async function populateCurrentWeather() {
     let locCard = document.getElementById("locationInfo");
     let currCard = document.getElementById("currentWeather");
 
-    currCard.innerText = "";
-    locCard.innerText = "";
+    currCard.innerHTML = "";
+
+    //remove the previous location
+    locCard.querySelectorAll(".card-content").forEach(el => el.remove());
 
     // name
     locCard.append(
@@ -123,30 +116,33 @@ function genForcastCard(parentId, pair, cardEl) {
 // NWS API Helper Functions
 // =========================================================================
 
+async function getData(url) {
+  try {
+    const response = await fetch(url);  // fetch returns a Response object
+
+    // check if the request succeeded
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    // unpack the JSON data
+    const data = await response.json();  // returns a JS object
+    return data;
+
+  } catch (err) {
+    console.error("Fetch error:", err);
+  }
+}
+
+async function getCoords(cityName) {
+  // use the NWS points API (through benitobox.net proxy)
+    return getData(`https://weather.benitobox.net/geocode?q=${cityName}`);
+}
+
 // gets the nearest station given GPS coordinates
-async function getStationData(lat, lon) {
-    // use the NWS points API to get the nearest station
-    let stationsURL = "";
-    let stationData = {};
-
-    await fetch(`https://api.weather.gov/points/${lat},${lon}`)
-    .then(resp => resp.json())
-    .then(data => {
-        stationsURL = data.properties.observationStations;
-    
-        stationData.forcastURL = data.properties.forecast;
-        stationData.hourlyURL  = data.properties.forecastHourly;
-    });
-
-    // take the first one from the list
-    // as the nearest station
-    await fetch(stationsURL)
-    .then(resp => resp.json())
-    .then(data => {
-        stationData.name = data.observationStations[0].split("/").pop();
-    });
-
-    return stationData;
+function getStationData(lat, lon) {
+    // use the NWS points API (through benitobox.net proxy)
+    return getData(`https://weather.benitobox.net/station?lat=${lat}&lon=${lon}`);
 }
 
 // returns the current conditions
@@ -190,6 +186,8 @@ async function fetchForecast(URL) {
 
 function populateDailyForecast() {
     let fcastContainer = document.getElementById("forecast");
+
+    fcastContainer.innerHTML = "";
 
     // populate the forcast
     for (pair of state.forecast) {
@@ -280,7 +278,7 @@ function pickIconKey(forecastText, isNighttime) {
       }
     }
   }
-  return "unknown";  // fallback
+  return "missing.png";  // fallback
 }
 
 const weatherIconMap = [
@@ -301,8 +299,12 @@ const weatherIconMap = [
   //  keywords: ["snow", "snow showers", "blizzard", "flurries"]
   //},
   {
+    iconKey: "light_rain_icon.png",
+    keywords: ["light rain", "drizzle"]
+  },
+  {
     iconKey: "rain_icon.png",
-    keywords: ["rain", "showers", "drizzle", "heavy rain"]
+    keywords: ["rain", "showers", "heavy rain"]
   },
   //{
   //  iconKey: "fog",
@@ -321,7 +323,7 @@ const weatherIconMap = [
     keywords: ["cloudy", "mostly cloudy", "overcast", "mostly overcast"]
   },
   {
-    iconKey: "partly_cloudy_icon.png",
+    iconKey: "partly_sunny_icon.png",
     keywords: ["partly cloudy", "partly sunny"]
   },
   {
@@ -339,7 +341,7 @@ const weatherIconMap = [
   
   // fallback (default)
   {
-    iconKey: "unknown_icon.png",
+    iconKey: "missing.png",
     keywords: []
   }
 ];
@@ -348,4 +350,64 @@ const weatherIconMap = [
 // Setup function calls
 // =========================================================================
 
-fetchWeather();
+let lastClickedButton = null;
+
+// capture which submit button was clicked
+document.getElementById("defaultCityForm").addEventListener("click", (e) => {
+  if (e.target.type === "submit") {
+    lastClickedButton = e.target.value;
+  }
+});
+
+document.getElementById("defaultCityForm").addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const city = document.getElementById("cityInput").value.trim();
+
+  try {
+    const coords = await getCoords(city);
+    if (!coords || !coords[0]) throw new Error("No coordinates found");
+
+    state.location = { lat: coords[0].lat, lon: coords[0].lon };
+    state.stationData = await getStationData(coords[0].lat, coords[0].lon);
+
+    if (lastClickedButton === "set-default") {
+      localStorage.setItem("stationData", JSON.stringify(state.stationData));
+      localStorage.setItem("location", JSON.stringify(state.location));
+    }
+
+    fetchWeather();
+
+    // clear value after search
+    document.getElementById("cityInput").value = "";
+
+  } catch (err) {
+    console.error("Error setting default city:", err);
+    alert("Could not load weather for that city.");
+  }
+
+  lastClickedButton = null; // reset
+});
+
+window.addEventListener("DOMContentLoaded", () => {
+  try {
+    const cachedStation = localStorage.getItem("stationData");
+    const cachedLocation = localStorage.getItem("location");
+
+    if (cachedStation && cachedLocation) {
+      state.stationData = JSON.parse(cachedStation);
+      state.location = JSON.parse(cachedLocation);
+
+      fetchWeather();
+
+    } else {
+      const locCard = document.getElementById("locationInfo");
+      locCard.append(
+        el("h2", { className: "card-content", textContent: "You have not selected a default city, please enter one..." })
+      );
+    }
+  } catch (err) {
+    console.error(err);
+    localStorage.removeItem("stationData");
+    localStorage.removeItem("location");
+  }
+});

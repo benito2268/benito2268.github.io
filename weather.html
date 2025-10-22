@@ -2,6 +2,7 @@
 <html>
   <head>
     <title> Ben's Weather Page </title>
+    <meta charset="UTF-8">
     <link rel="stylesheet" href="weather.css">
     <script src="weather.js" defer></script>
   </head>
@@ -11,7 +12,27 @@
       
         <div class="rectangle">
         <p id="menubar"><a href="index.html">Home</a>     <a href="memes.html">Memes</a>     <a href="fish.html">Fish</a>     <a href="weather.html">Weather<a></a>     <a href="links.html">Links</a>  
-        <div id="locationInfo" class="card"></div>
+
+        <div id="locationInfo" class="card">
+          <form id="defaultCityForm">
+            <label class="card-label" for="cityInput">Enter a City:</label>
+            <div class="input-row">
+              <input id="cityInput" placeholder="City, ST" class="card-input">
+
+              <div class="tooltip">
+                <button class="card-button" name="action" value="set-default">Set Default</button>
+                <span class="tooltip-text">Save this as the default city</span>
+              </div>
+
+              <div class="tooltip">
+                <button class="card-button" name="action" value="view">View</button>
+                <span class="tooltip-text">View this city without saving it</span>
+              </div>
+            </div>
+          </form>
+          <hr>
+      </div>
+
         <div id="weatherForecast" class="container">
             
             <div id="currentWeather" class="card">
@@ -25,7 +46,7 @@
         </div>
 
         <div id="radarContainer" class="card">
-          <h2 class="card-title"> Radar</h2>
+          <h2 class="card-title"> U.S. Radar</h2>
           <iframe class="card-content"
             src="https://radar.weather.gov/"
             width="800"

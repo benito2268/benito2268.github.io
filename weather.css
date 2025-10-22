@@ -24,6 +24,11 @@ html, body {
 
 hr { color: #555566 }
 
+form {
+  padding-top: 15px;
+  padding-bottom: 15px;
+}
+
 #heading {
     color:#FFC966;
     text-decoration: underline;
@@ -98,7 +103,8 @@ hr { color: #555566 }
   color: #8FBC8F;
 }
 
-.card-row {
+.card-label {
+  color:#FFC966;
 }
 
 .fcast-img {
@@ -147,4 +153,55 @@ hr { color: #555566 }
 
 .card-info {
     font-size: small;
+}
+
+.card-input {
+  font-family: "IBM";
+  color:#FFC966;
+  background-color: #1E1E2F;
+  border-radius: 3px;
+  padding: 0.6rem 1rem;
+  margin-top: 15px;
+}
+
+.card-button {
+  font-family: "IBM";
+  padding: 0.6rem 1rem;
+  background-color: #FFC966;
+  border-radius: 3px;
+  color: #1E1E2F;
+}
+
+.button-row {
+  display: flex;
+  gap: 1rem; /* space between buttons */
+}
+
+.tooltip {
+  position: relative;
+  display: inline-block;
+}
+
+.tooltip .tooltip-text {
+  visibility: hidden;
+  opacity: 0;
+  background: #1E1E2F;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 6px 10px;
+  position: absolute;
+  bottom: 125%; /* position above the button */
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.85rem;
+  white-space: nowrap;
+  transition: opacity 0.2s;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  z-index: 100;
+}
+
+.tooltip:hover .tooltip-text {
+  visibility: visible;
+  opacity: 1;
 }
