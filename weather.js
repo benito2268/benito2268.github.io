@@ -292,8 +292,12 @@ const weatherIconMap = [
     keywords: ["hail"]
   },
   {
+    iconKey: "frost_icon.png",
+    keywords: ["frost", "patchy frost", "widespread frost", "cold"]
+  },
+  {
     iconKey: "sleet_icon.png",
-    keywords: ["sleet", "ice pellets", "freezing rain", "freezing drizzle"]
+    keywords: ["sleet", "ice pellets", "freezing rain", "freezing drizzle", "freezing spray"]
   },
   {
     iconKey: "light_snow_icon.png",
@@ -331,11 +335,6 @@ const weatherIconMap = [
     iconKey: "sun_icon.png",
     keywords: ["sunny", "clear", "mostly clear", "becoming sunny"]
   },
-  {
-    iconKey: "frost_icon.png",
-    keywords: ["frost", "patchy frost", "widespread frost", "cold"]
-  },
-  
   // fallback (default)
   {
     iconKey: "missing",
