@@ -89,7 +89,7 @@ form {
 /* ===== Example Card (optional, for context) ===== */
 .card {
   position: relative;
-  z-index: 1; /* make sure it’s above stars */
+  z-index: 1;
   background-color: #2A2A3D;
   border-radius: 8px;
   border: 2px solid #555566;
@@ -100,6 +100,50 @@ form {
   min-width: 300px;
   transition: transform 0.3s ease-in-out;
   color: #8FBC8F;
+}
+
+/* === Tabs === */
+.tab-container {
+  display: flex;
+  justify-content: space-around;
+  border-bottom: 2px solid #555566;
+  margin-bottom: 10px;
+}
+
+.tab-button {
+  flex: 1;
+  padding: 8px;
+  background: none;
+  border: none;
+  font-weight: bold;
+  color: #8FBC8F;
+  cursor: pointer;
+  transition: color 0.2s, border-bottom 0.2s;
+  font-family: "IBM";
+  color: #C0F0C0;
+}
+
+.tab-button:hover {
+  color: #B2E0B2;
+}
+
+.tab-button.active {
+  color: #FFC966;
+  border-bottom: 2px solid #FFC966;
+}
+
+.tab-content {
+  display: none;
+  animation: fadeIn 0.2s ease;
+}
+
+.tab-content.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .card-row span {
@@ -208,4 +252,58 @@ form {
 .tooltip:hover .tooltip-text {
   visibility: visible;
   opacity: 1;
+}
+
+/* Outer forecast card: full width, left margin 15px, top/bottom 30px */
+.forecast-card {
+  position: relative;
+  z-index: 1;
+  background-color: #2A2A3D;
+  border-radius: 8px;
+  border: 2px solid #555566;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 100vw;
+  max-width: 100%;
+  margin: 30px 0;          /* top/bottom spacing from other sections */
+  margin-left: 15px;       /* slight left inset */
+  color: #DADADA;
+  box-sizing: border-box;
+  padding: 20px 0 20px 15px;  /* small internal padding for content breathing room */
+}
+
+/* Title */
+.forecast-card .card-title {
+  margin: 0 0 15px 0;
+  font-size: 1.3rem;
+  color: #AEE1AE;
+  font-weight: bold;
+}
+
+/* Inner container for horizontal scroll */
+.forecast-container {
+  display: flex;
+  gap: 15px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  scroll-behavior: smooth;
+}
+
+/* Scrollbar styling */
+.forecast-container::-webkit-scrollbar {
+  height: 14px;
+}
+
+.forecast-container::-webkit-scrollbar-track {
+  background: #2A2A3D;
+  border-radius: 8px;
+}
+
+.forecast-container::-webkit-scrollbar-thumb {
+  background-color: #5E5E70;
+  border-radius: 8px;
+  border: 3px solid #2A2A3D;
+}
+
+.forecast-container::-webkit-scrollbar-thumb:hover {
+  background-color: #8FBC8F;
 }

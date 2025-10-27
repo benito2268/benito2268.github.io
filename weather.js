@@ -26,6 +26,7 @@ async function fetchWeather() {
   // actually do the population
   populateCurrentWeather();
   populateDailyForecast();
+  populateCurrentDetails();
 
   console.log("Weather data loaded:", state);
 }
@@ -66,6 +67,23 @@ async function populateCurrentWeather() {
       el("h3", {className: "aux-data", textContent: `Dew Point: ${currWeather.dewpointF}°F`}),
       el("h3", {className: "aux-data", textContent: `Wind: ${currWeather.windDir} ${currWeather.windMph != 0 ? (currWeather.windMph + " MPH") : "Calm"}`}),
     );
+}
+
+function populateCurrentDetails(forecast) {
+    // first populate the 'details' tab
+    let detailTab = document.getElementById("details");
+
+    const firstEntry = state.forecast[0];
+    const firstPeriod =
+        new Date(firstEntry.day.startTime) < new Date(firstEntry.night.startTime)
+            ? firstEntry.day
+            : firstEntry.night;
+
+    detailTab.append(
+        el("p", { "classList": "card-content", "textContent": `${firstPeriod.detailedForecast}`}),
+        el("h2", { "classList": "aux-data", "textContent": `Visibility : ${state.currentWeather.vis} Mi` }),
+    );
+
 }
 
 function genForcastCard(parentId, pair, cardEl) {
@@ -163,6 +181,7 @@ async function getCurrentCond(station) {
         windDir   : DegToCardinal(rawData.windDirection.value),
         presMmhg  : PaToMmhg(rawData.barometricPressure.value),
         relHum    : Math.round(rawData.relativeHumidity.value * 10) / 10,
+        vis       : MtoMi(rawData.visibility.value),
 
         condition : rawData.textDescription,
         name      : rawData.stationName,
@@ -238,6 +257,10 @@ function pairForecasts(periods) {
 function isNight(timestamp) {
     const date = new Date(timestamp);
     return (date.getHours() < 6 || date.getHours() >= 20);
+}
+
+function MtoMi(m) {
+    return Math.round(m / 1609);
 }
 
 function CtoF(tempC) {
@@ -406,4 +429,18 @@ window.addEventListener("DOMContentLoaded", () => {
     localStorage.removeItem("stationData");
     localStorage.removeItem("location");
   }
+});
+
+document.querySelectorAll('.tab-button').forEach(button => {
+  button.addEventListener('click', () => {
+    const target = button.dataset.tab;
+
+    // deactivate all
+    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+
+    // activate selected
+    button.classList.add('active');
+    document.getElementById(target).classList.add('active');
+  });
 });
