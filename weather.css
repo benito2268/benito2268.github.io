@@ -1,9 +1,9 @@
 /* ===== Base Styling ===== */
 @font-face {
-  font-family: 'IBM';
-  src: url('./fonts/ibm_bios.ttf') format('truetype');
-  font-weight: normal;
-  font-style: normal;
+    font-family: 'IBM';
+    src: url('./fonts/ibm_bios.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
 }
 
 a {
@@ -11,22 +11,22 @@ a {
 }
 
 html, body {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  font-family: 'IBM', monospace;
-  image-rendering: pixelated;
-  -webkit-font-smoothing: none;
-  overflow-x: hidden;
-  transition: background 1s ease-in-out;
-  background-color: #1E1E2F;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    font-family: 'IBM', monospace;
+    image-rendering: pixelated;
+    -webkit-font-smoothing: none;
+    overflow-x: hidden;
+    transition: background 1s ease-in-out;
+    background-color: #1E1E2F;
 }
 
 hr { color: #555566 }
 
 form {
-  padding-top: 15px;
-  padding-bottom: 15px;
+    padding-top: 15px;
+    padding-bottom: 15px;
 }
 
 #heading {
@@ -50,7 +50,7 @@ form {
 }
 
 #forecast {
-  background-color: #799fbf;
+    background-color: #799fbf;
 }
 
 #smdate {
@@ -96,18 +96,18 @@ form {
 
 /* ===== Example Card (optional, for context) ===== */
 .card {
-  position: relative;
-  z-index: 1;
-  background-color: #2A2A3D;
-  border-radius: 8px;
-  border: 2px solid #555566;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  margin: 20px;
-  padding: 10px;
-  width: fit-content;
-  min-width: 300px;
-  transition: transform 0.3s ease-in-out;
-  color: #8FBC8F;
+    position: relative;
+    z-index: 1;
+    background-color: #2A2A3D;
+    border-radius: 8px;
+    border: 2px solid #555566;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: 20px;
+    padding: 10px;
+    width: fit-content;
+    min-width: 300px;
+    transition: transform 0.3s ease-in-out;
+    color: #8FBC8F;
 }
 
 #currentDetails {
@@ -117,56 +117,56 @@ form {
 
 /* === Tabs === */
 .tab-container {
-  display: flex;
-  justify-content: space-around;
-  border-bottom: 2px solid #555566;
-  margin-bottom: 10px;
-  align-items: left;
+    display: flex;
+    justify-content: space-around;
+    border-bottom: 2px solid #555566;
+    margin-bottom: 10px;
+    align-items: left;
 }
 
 .tab-button {
-  flex: 1;
-  padding: 8px;
-  background: none;
-  border: none;
-  font-weight: bold;
-  color: #8FBC8F;
-  cursor: pointer;
-  transition: color 0.2s, border-bottom 0.2s;
-  font-family: "IBM";
-  color: #C0F0C0;
+    flex: 1;
+    padding: 8px;
+    background: none;
+    border: none;
+    font-weight: bold;
+    color: #8FBC8F;
+    cursor: pointer;
+    transition: color 0.2s, border-bottom 0.2s;
+    font-family: "IBM";
+    color: #C0F0C0;
 }
 
 .tab-button:hover {
-  color: #B2E0B2;
+    color: #B2E0B2;
 }
 
 .tab-button.active {
-  color: #FFC966;
-  border-bottom: 2px solid #FFC966;
+    color: #FFC966;
+    border-bottom: 2px solid #FFC966;
 }
 
 .tab-content {
-  display: none;
-  animation: fadeIn 0.2s ease;
+    display: none;
+    animation: fadeIn 0.2s ease;
 }
 
 .tab-content.active {
-  display: block;
+    display: block;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(5px); }
-  to { opacity: 1; transform: translateY(0); }
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .card-row span {
-  font-size: 1rem;
-  color: #8FBC8F;
+    font-size: 1rem;
+    color: #8FBC8F;
 }
 
 .card-label {
-  color:#FFC966;
+    color:#FFC966;
 }
 
 .fcast-img {
@@ -176,24 +176,24 @@ form {
 }
 
 .container {
-  display: flex;
-  gap: 10px;
-  padding: 10px;
-  overflow-x: auto;     /* enables horizontal scrolling */
-  scroll-behavior: smooth;
+    display: flex;
+    gap: 10px;
+    padding: 10px;
+    overflow-x: auto;     /* enables horizontal scrolling */
+    scroll-behavior: smooth;
 }
 
 .container::-webkit-scrollbar {
-  height: 8px;          /* small horizontal scrollbar */
+    height: 8px;          /* small horizontal scrollbar */
 }
 
 .container::-webkit-scrollbar-thumb {
-  background-color: rgba(255, 255, 255, 0.2);
-  border-radius: 4px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
 }
 
 .container > * {
-  flex: 0 0 300px;       /* each card has fixed width (like your grid minmax) */
+    flex: 0 0 300px;       /* each card has fixed width (like your grid minmax) */
 }
 
 .card-content {
@@ -218,107 +218,107 @@ form {
 }
 
 .card-input {
-  font-family: "IBM";
-  color:#FFC966;
-  background-color: #1E1E2F;
-  border-radius: 3px;
-  padding: 0.6rem 1rem;
-  margin-top: 15px;
+    font-family: "IBM";
+    color:#FFC966;
+    background-color: #1E1E2F;
+    border-radius: 3px;
+    padding: 0.6rem 1rem;
+    margin-top: 15px;
 }
 
 .card-button {
-  margin-left: 15px;
-  font-family: "IBM";
-  padding: 0.6rem 1rem;
-  background-color: #FFC966;
-  border-radius: 3px;
-  color: #1E1E2F;
+    margin-left: 15px;
+    font-family: "IBM";
+    padding: 0.6rem 1rem;
+    background-color: #FFC966;
+    border-radius: 3px;
+    color: #1E1E2F;
 }
 
 .button-row {
-  display: flex;
-  gap: 1rem; /* space between buttons */
+    display: flex;
+    gap: 1rem; /* space between buttons */
 }
 
 .tooltip {
-  position: relative;
-  display: inline-block;
+    position: relative;
+    display: inline-block;
 }
 
 .tooltip .tooltip-text {
-  visibility: hidden;
-  opacity: 0;
-  background: #1E1E2F;
-  color: #fff;
-  text-align: center;
-  border-radius: 6px;
-  padding: 6px 10px;
-  position: absolute;
-  bottom: 125%; /* position above the button */
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 0.85rem;
-  white-space: nowrap;
-  transition: opacity 0.2s;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
-  z-index: 100;
+    visibility: hidden;
+    opacity: 0;
+    background: #1E1E2F;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 6px 10px;
+    position: absolute;
+    bottom: 125%; /* position above the button */
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.85rem;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    z-index: 100;
 }
 
 .tooltip:hover .tooltip-text {
-  visibility: visible;
-  opacity: 1;
+    visibility: visible;
+    opacity: 1;
 }
 
 /* Outer forecast card: full width, left margin 15px, top/bottom 30px */
 .forecast-card {
-  position: relative;
-  z-index: 1;
-  background-color: #2A2A3D;
-  border-radius: 8px;
-  border: 2px solid #555566;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  width: 100vw;
-  max-width: 100%;
-  margin: 30px 0;          /* top/bottom spacing from other sections */
-  margin-left: 15px;       /* slight left inset */
-  color: #DADADA;
-  box-sizing: border-box;
-  padding: 20px 0 20px 15px;  /* small internal padding for content breathing room */
+    position: relative;
+    z-index: 1;
+    background-color: #2A2A3D;
+    border-radius: 8px;
+    border: 2px solid #555566;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100vw;
+    max-width: 100%;
+    margin: 30px 0;          /* top/bottom spacing from other sections */
+    margin-left: 15px;       /* slight left inset */
+    color: #DADADA;
+    box-sizing: border-box;
+    padding: 20px 0 20px 15px;  /* small internal padding for content breathing room */
 }
 
 /* Title */
 .forecast-card .card-title {
-  margin: 0 0 15px 0;
-  font-size: 1.3rem;
-  color: #AEE1AE;
-  font-weight: bold;
+    margin: 0 0 15px 0;
+    font-size: 1.3rem;
+    color: #AEE1AE;
+    font-weight: bold;
 }
 
 /* Inner container for horizontal scroll */
 .forecast-container {
-  display: flex;
-  gap: 15px;
-  overflow-x: auto;
-  padding-bottom: 12px;
-  scroll-behavior: smooth;
+    display: flex;
+    gap: 15px;
+    overflow-x: auto;
+    padding-bottom: 12px;
+    scroll-behavior: smooth;
 }
 
 /* Scrollbar styling */
 .forecast-container::-webkit-scrollbar {
-  height: 14px;
+    height: 14px;
 }
 
 .forecast-container::-webkit-scrollbar-track {
-  background: #2A2A3D;
-  border-radius: 8px;
+    background: #2A2A3D;
+    border-radius: 8px;
 }
 
 .forecast-container::-webkit-scrollbar-thumb {
-  background-color: #5E5E70;
-  border-radius: 8px;
-  border: 3px solid #2A2A3D;
+    background-color: #5E5E70;
+    border-radius: 8px;
+    border: 3px solid #2A2A3D;
 }
 
 .forecast-container::-webkit-scrollbar-thumb:hover {
-  background-color: #8FBC8F;
+    background-color: #8FBC8F;
 }

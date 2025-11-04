@@ -16,46 +16,46 @@ const state = {
 };
 
 async function fetchWeather() {
-  const [current, forecast, astro] = await Promise.all([
-    getCurrentCond(state.stationData.name),
-    fetchForecast(state.stationData.forecastURL), 
-    getAstroData(new Date().toISOString().split('T')[0], state.location.lat, state.location.lon)
-  ]);
+    const [current, forecast, astro] = await Promise.all([
+        getCurrentCond(state.stationData.name),
+        fetchForecast(state.stationData.forecastURL), 
+        getAstroData(new Date().toISOString().split('T')[0], state.location.lat, state.location.lon)
+    ]);
 
-  state.currentWeather = current;
-  state.forecast = forecast;
-  state.astroData = astro;
+    state.currentWeather = current;
+    state.forecast = forecast;
+    state.astroData = astro;
 
-  // actually do the population
-  populateCurrentWeather();
-  populateDailyForecast();
-  populateCurrentDetails();
+    // actually do the population
+    populateCurrentWeather();
+    populateDailyForecast();
+    populateCurrentDetails();
 
 
-  // add the event listener
-  document.getElementById("astroForm").addEventListener("submit", async (e) => {
-    e.preventDefault();
+    // add the event listener
+    document.getElementById("astroForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
 
-    const dateInput = document.getElementById("smdate"); 
+        const dateInput = document.getElementById("smdate"); 
 
-    // re-fetch the astro data
-    const newData = await getAstroData(dateInput.value, state.location.lat, state.location.lon);
-    state.astroData = newData;
+        // re-fetch the astro data
+        const newData = await getAstroData(dateInput.value, state.location.lat, state.location.lon);
+        state.astroData = newData;
 
-    // re-update the display
-    updateAstro(dateInput.value);
-  });
+        // re-update the display
+        updateAstro(dateInput.value);
+    });
 
-  console.log("Weather data loaded:", state);
+    console.log("Weather data loaded:", state);
 }
 
 function el(tag, props = {}, children = []) {
-  const e = document.createElement(tag);
-  Object.assign(e, props);
-  for (const child of children) {
-    e.append(child);
-  }
-  return e;
+    const e = document.createElement(tag);
+    Object.assign(e, props);
+    for (const child of children) {
+        e.append(child);
+    }
+    return e;
 }
 
 async function populateCurrentWeather() {
@@ -71,20 +71,20 @@ async function populateCurrentWeather() {
 
     // name
     locCard.append(
-      el("h2", {className: "card-content", textContent: `${currWeather.name} (${stationData.name})`})
+        el("h2", {className: "card-content", textContent: `${currWeather.name} (${stationData.name})`})
     );
 
     // temperature
     currCard.append(
-      el("p", {className: "card-title", "textContent" : "Current Weather"}),
-      el("h1", {className: "temp", textContent: `${currWeather.tempF}°F`}),
-      el("img", {src : `images/weather/${pickIconKey(currWeather.condition, isNight(currWeather.timestamp))}`}),
-      el("h2", {className: "main-data", textContent: `${currWeather.condition}`, style: "color: #FFC966;"}),
-      el("hr"),
-      el("h3", {className: "aux-data", textContent: `Humidity: ${currWeather.relHum}%`}),
-      el("h3", {className: "aux-data", textContent: `Dew Point: ${currWeather.dewpointF}°F`}),
-      el("h3", {className: "aux-data", textContent: `Wind: ${currWeather.windDir} ${currWeather.windMph != 0 ? (currWeather.windMph + " MPH") : "Calm"}`}),
-      el("h3", {className: "aux-data", textContent: `Press: ${currWeather.pressInhg} inHg`}),
+        el("p", {className: "card-title", "textContent" : "Current Weather"}),
+        el("h1", {className: "temp", textContent: `${currWeather.tempF}°F`}),
+        el("img", {src : `images/weather/${pickIconKey(currWeather.condition, isNight(currWeather.timestamp))}`}),
+        el("h2", {className: "main-data", textContent: `${currWeather.condition}`, style: "color: #FFC966;"}),
+        el("hr"),
+        el("h3", {className: "aux-data", textContent: `Humidity: ${currWeather.relHum}%`}),
+        el("h3", {className: "aux-data", textContent: `Dew Point: ${currWeather.dewpointF}°F`}),
+        el("h3", {className: "aux-data", textContent: `Wind: ${currWeather.windDir} ${currWeather.windMph != 0 ? (currWeather.windMph + " MPH") : "Calm"}`}),
+        el("h3", {className: "aux-data", textContent: `Press: ${currWeather.pressInhg} inHg`}),
     );
 }
 
@@ -101,8 +101,8 @@ function populateCurrentDetails(forecast) {
     const firstEntry = state.forecast[0];
     const firstPeriod =
         firstEntry.day
-            ? firstEntry.day
-            : firstEntry.night;
+        ? firstEntry.day
+        : firstEntry.night;
 
     detailTab.append(
         el("div", { "id" : "detailsCol" }, [
@@ -135,15 +135,15 @@ function genForcastCard(parentId, pair, cardEl) {
             el("h2", { "classList" : "fcast-content", "textContent" : `${pair.day.shortForecast}` }),
             el("img", { "classList" : "fcast-img", "src" : `images/weather/${pickIconKey(pair.day.shortForecast)}`}),
             el("span", { "classList" : "card-row" }, [
-              el("h2", { "classList" : "card-title", "textContent" : `${pair.day.temperature}°F`, "style" : "color: #E9967A;"}),
-              el("h2", { "classList" : "fcast-content", "textContent" : `${pair.day.probabilityOfPrecipitation.value}% chance precip.`}),
+                el("h2", { "classList" : "card-title", "textContent" : `${pair.day.temperature}°F`, "style" : "color: #E9967A;"}),
+                el("h2", { "classList" : "fcast-content", "textContent" : `${pair.day.probabilityOfPrecipitation.value}% chance precip.`}),
             ]),
             el("hr"),
             el("h1", { "classList" : "card-title", "textContent" : `${pair.night.name}` }),
             el("h2", { "classList" : "fcast-content", "textContent" : `${pair.night.shortForecast}` }),
             el("span", { "classList" : "card-row" }, [
-              el("h2", { "classList" : "card-title", "textContent" : `${pair.night.temperature}°F`, "style" : "color: #7BAFD4;"}),
-              el("h2", { "classList" : "fcast-content", "textContent" : `${pair.night.probabilityOfPrecipitation.value}% chance precip.`}),
+                el("h2", { "classList" : "card-title", "textContent" : `${pair.night.temperature}°F`, "style" : "color: #7BAFD4;"}),
+                el("h2", { "classList" : "fcast-content", "textContent" : `${pair.night.probabilityOfPrecipitation.value}% chance precip.`}),
             ]),
         );
 
@@ -163,8 +163,8 @@ function genForcastCard(parentId, pair, cardEl) {
             el("h2", { "classList" : "fcast-content", "textContent" : `${period.shortForecast}` }),
             el("img", { "classList" : "fcast-img", "src" : `images/weather/${pickIconKey(period.shortForecast, isNight)}`}),
             el("span", { "classList" : "card-row" }, [
-              el("h2", { "classList" : "card-title", "textContent" : `${period.temperature}°F`, "style" : `color: ${isNight ? "#7BAFD4" : "#E9967A"};`}),
-              el("h2", { "classList" : "fcast-content", "textContent" : `${period.probabilityOfPrecipitation.value}% chance precip.`}),
+                el("h2", { "classList" : "card-title", "textContent" : `${period.temperature}°F`, "style" : `color: ${isNight ? "#7BAFD4" : "#E9967A"};`}),
+                el("h2", { "classList" : "fcast-content", "textContent" : `${period.probabilityOfPrecipitation.value}% chance precip.`}),
             ]),
             el("p", { "classList" : "fcast-content", "textContent" : `${period.detailedForecast}`})
         );
@@ -187,7 +187,7 @@ function updateAstro(date) {
             el("input", {"type" : "date", "id" : "smdate"}),
             el("button", {"type" : "sumbit", "classList" : "card-button", "innerText" : "Update"}),
         ]),
-     
+
         el("hr"),
 
         el("h2", {"classList" : "card-title", "textContent" : "Sun"}),
@@ -207,44 +207,44 @@ function updateAstro(date) {
 // =========================================================================
 
 function utcToLocal(utcTimeStr) {
-  if (!utcTimeStr) return null;
+    if (!utcTimeStr) return null;
 
-  const [hours, minutes] = utcTimeStr.split(':').map(Number);
-  const now = new Date();
-  const utcDate = new Date(Date.UTC(
-    now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),
-    hours, minutes
-  ));
+    const [hours, minutes] = utcTimeStr.split(':').map(Number);
+    const now = new Date();
+    const utcDate = new Date(Date.UTC(
+        now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),
+        hours, minutes
+    ));
 
-  return utcDate.toLocaleTimeString([], {
-    hour: 'numeric',
-    minute: '2-digit',
-    hour12: true
-  });
+    return utcDate.toLocaleTimeString([], {
+        hour: 'numeric',
+        minute: '2-digit',
+        hour12: true
+    });
 }
 
 async function getData(url) {
-  try {
-    const response = await fetch(url);  // fetch returns a Response object
+    try {
+        const response = await fetch(url);  // fetch returns a Response object
 
-    // check if the request succeeded
-    if (!response.ok) {
-        console.log(url);
-        console.log(response);
-        throw new Error(`HTTP error! status: ${response.status}`);
+        // check if the request succeeded
+        if (!response.ok) {
+            console.log(url);
+            console.log(response);
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // unpack the JSON data
+        const data = await response.json();  // returns a JS object
+        return data;
+
+    } catch (err) {
+        console.error("Fetch error:", err);
     }
-
-    // unpack the JSON data
-    const data = await response.json();  // returns a JS object
-    return data;
-
-  } catch (err) {
-    console.error("Fetch error:", err);
-  }
 }
 
 async function getCoords(cityName) {
-  // use the NWS points API (through benitobox.net proxy)
+    // use the NWS points API (through benitobox.net proxy)
     return getData(`https://weather.benitobox.net/geocode?q=${cityName}`);
 }
 
@@ -266,17 +266,17 @@ async function getCurrentCond(station) {
     let aqiData = {};
 
     await fetch(`https://api.weather.gov/stations/${station}/observations/latest`)
-    .then(resp => resp.json())
-    .then(data => {
-        rawData = data.properties;
-    });
+        .then(resp => resp.json())
+        .then(data => {
+            rawData = data.properties;
+        });
 
     // get the AQI
     await fetch(`https://weather.benitobox.net/aqi?lat=${state.location.lat}&lon=${state.location.lon}`)
-    .then(resp => resp.json())
-    .then(data => {
-        aqiData = data;
-    });
+        .then(resp => resp.json())
+        .then(data => {
+            aqiData = data;
+        });
 
     const currCond = {
         tempF     : CtoF(rawData.temperature.value),
@@ -299,13 +299,13 @@ async function getCurrentCond(station) {
 
 // returns the 7 day forecast
 async function fetchForecast(URL) {
-   let forecast = [];
+    let forecast = [];
 
     await fetch(URL)
-    .then(resp => resp.json())
-    .then(data => {
-        forecast = pairForecasts(data.properties.periods);  
-    });
+        .then(resp => resp.json())
+        .then(data => {
+            forecast = pairForecasts(data.properties.periods);  
+        });
 
     return forecast;
 }
@@ -331,32 +331,32 @@ function populateDailyForecast() {
 
 // forcasts may be off cycle (e.g. starts with "Tonight")
 function pairForecasts(periods) {
-  const pairs = [];
-  let currentPair = {};
+    const pairs = [];
+    let currentPair = {};
 
-  for (const p of periods) {
-    if (!p.isDaytime) {
-      if (currentPair.day) {
-        currentPair.night = p;
-        pairs.push(currentPair);
-        currentPair = {};
-      } else {
-        pairs.push({ night: p });
-      }
-    } else {
-      if (currentPair.day) {
-        pairs.push(currentPair);
-      }
-      currentPair = { day: p };
+    for (const p of periods) {
+        if (!p.isDaytime) {
+            if (currentPair.day) {
+                currentPair.night = p;
+                pairs.push(currentPair);
+                currentPair = {};
+            } else {
+                pairs.push({ night: p });
+            }
+        } else {
+            if (currentPair.day) {
+                pairs.push(currentPair);
+            }
+            currentPair = { day: p };
+        }
     }
-  }
 
-  // Handle trailing unpaired day (e.g. last period is a day with no night)
-  if (currentPair.day && !currentPair.night) {
-    pairs.push(currentPair);
-  }
+    // Handle trailing unpaired day (e.g. last period is a day with no night)
+    if (currentPair.day && !currentPair.night) {
+        pairs.push(currentPair);
+    }
 
-  return pairs;
+    return pairs;
 }
 
 // helper functions to convert metric to US units
@@ -389,97 +389,97 @@ function DegToCardinal(deg) {
 }
 
 function PaToInhg(pressPa) {
-     return (pressPa / 3386);
+    return (pressPa / 3386);
 }
 
 function pickIconKey(forecastText, isNighttime) {
-  const text = forecastText.toLowerCase();
-  for (const entry of weatherIconMap) {
-    for (const kw of entry.keywords) {
-      if (text.includes(kw)) {
-        let result = entry.iconKey;
+    const text = forecastText.toLowerCase();
+    for (const entry of weatherIconMap) {
+        for (const kw of entry.keywords) {
+            if (text.includes(kw)) {
+                let result = entry.iconKey;
 
-        // make it a little moon for nighttime
-        if (isNighttime && (result === "sun_icon.png" || result === "partly_cloudy_icon.png")) {
-          return (`${result.split('.')[0]}_night.png`);
-        } else {
-          return result;
+                // make it a little moon for nighttime
+                if (isNighttime && (result === "sun_icon.png" || result === "partly_cloudy_icon.png")) {
+                    return (`${result.split('.')[0]}_night.png`);
+                } else {
+                    return result;
+                }
+            }
         }
-      }
     }
-  }
-  return "missing.png";  // fallback
+    return "missing.png";  // fallback
 }
 
 const weatherIconMap = [
-  {
-    iconKey: "storm_icon.png",
-    keywords: ["thunderstorm", "t-storm", "thunderstorms"]
-  },
-  {
-    iconKey: "hail_icon.png",
-    keywords: ["hail"]
-  },
-  {
-    iconKey: "frost_icon.png",
-    keywords: ["frost", "patchy frost", "widespread frost", "cold"]
-  },
-  {
-    iconKey: "sleet_icon.png",
-    keywords: ["sleet", "ice pellets", "freezing rain", "freezing drizzle", "freezing spray"]
-  },
-  {
-    iconKey: "light_snow_icon.png",
-    keywords: ["flurries", "light snow"]
-  },
-  {
-    iconKey: "snow_icon.png",
-    keywords: ["snow", "snow showers", "blizzard", "blowing snow"]
-  },
-  {
-    iconKey: "light_rain_icon.png",
-    keywords: ["light rain", "drizzle"]
-  },
-  {
-    iconKey: "rain_icon.png",
-    keywords: ["rain", "showers", "heavy rain"]
-  },
-  {
-    iconKey: "fog_icon.png",
-    keywords: ["fog", "dense fog", "patchy fog", "areas fog", "haze", "smoke", "patchy haze", "areas smoke", "mist"]
-  },
-  {
-    iconKey: "wind_icon.png",
-    keywords: ["wind", "blowing dust", "blowing sand"]
-  },
-  {
-    iconKey: "cloud_icon.png",
-    keywords: ["cloudy", "mostly cloudy", "overcast", "mostly overcast"]
-  },
-  {
-    iconKey: "partly_sunny_icon.png",
-    keywords: ["partly cloudy", "partly sunny"]
-  },
-  {
-    iconKey: "sun_icon.png",
-    keywords: ["sunny", "clear", "mostly clear", "becoming sunny"]
-  },
-  // fallback (default)
-  {
-    iconKey: "missing",
-    keywords: []
-  }
+    {
+        iconKey: "storm_icon.png",
+        keywords: ["thunderstorm", "t-storm", "thunderstorms"]
+    },
+    {
+        iconKey: "hail_icon.png",
+        keywords: ["hail"]
+    },
+    {
+        iconKey: "frost_icon.png",
+        keywords: ["frost", "patchy frost", "widespread frost", "cold"]
+    },
+    {
+        iconKey: "sleet_icon.png",
+        keywords: ["sleet", "ice pellets", "freezing rain", "freezing drizzle", "freezing spray"]
+    },
+    {
+        iconKey: "light_snow_icon.png",
+        keywords: ["flurries", "light snow"]
+    },
+    {
+        iconKey: "snow_icon.png",
+        keywords: ["snow", "snow showers", "blizzard", "blowing snow"]
+    },
+    {
+        iconKey: "light_rain_icon.png",
+        keywords: ["light rain", "drizzle"]
+    },
+    {
+        iconKey: "rain_icon.png",
+        keywords: ["rain", "showers", "heavy rain"]
+    },
+    {
+        iconKey: "fog_icon.png",
+        keywords: ["fog", "dense fog", "patchy fog", "areas fog", "haze", "smoke", "patchy haze", "areas smoke", "mist"]
+    },
+    {
+        iconKey: "wind_icon.png",
+        keywords: ["wind", "blowing dust", "blowing sand"]
+    },
+    {
+        iconKey: "cloud_icon.png",
+        keywords: ["cloudy", "mostly cloudy", "overcast", "mostly overcast"]
+    },
+    {
+        iconKey: "partly_sunny_icon.png",
+        keywords: ["partly cloudy", "partly sunny"]
+    },
+    {
+        iconKey: "sun_icon.png",
+        keywords: ["sunny", "clear", "mostly clear", "becoming sunny"]
+    },
+    // fallback (default)
+    {
+        iconKey: "missing",
+        keywords: []
+    }
 ];
 
 const moonPhaseImages = {
-  "New Moon": "new_moon.png",
-  "Waxing Crescent": "quarter.png",
-  "First Quarter": "quarter.png",
-  "Waxing Gibbous": "gibbous.png",
-  "Full Moon": "full_moon.png",
-  "Waning Gibbous": "gibbous.png",
-  "Last Quarter": "quarter.png",
-  "Waning Crescent": "quarter.png"
+    "New Moon": "new_moon.png",
+    "Waxing Crescent": "quarter.png",
+    "First Quarter": "quarter.png",
+    "Waxing Gibbous": "gibbous.png",
+    "Full Moon": "full_moon.png",
+    "Waning Gibbous": "gibbous.png",
+    "Last Quarter": "quarter.png",
+    "Waning Crescent": "quarter.png"
 };
 
 const aqiColorMap = [
@@ -500,77 +500,77 @@ let lastClickedButton = null;
 
 // capture which submit button was clicked
 document.getElementById("defaultCityForm").addEventListener("click", (e) => {
-  if (e.target.type === "submit") {
-    lastClickedButton = e.target.value;
-  }
+    if (e.target.type === "submit") {
+        lastClickedButton = e.target.value;
+    }
 });
 
 document.getElementById("defaultCityForm").addEventListener("submit", async (e) => {
-  e.preventDefault();
-  const city = document.getElementById("cityInput").value.trim();
+    e.preventDefault();
+    const city = document.getElementById("cityInput").value.trim();
 
-  try {
-    const coords = await getCoords(city);
-    if (!coords || !coords[0]) throw new Error("No coordinates found");
+    try {
+        const coords = await getCoords(city);
+        if (!coords || !coords[0]) throw new Error("No coordinates found");
 
-    state.location = { lat: coords[0].lat, lon: coords[0].lon };
-    state.stationData = await getStationData(coords[0].lat, coords[0].lon);
+        state.location = { lat: coords[0].lat, lon: coords[0].lon };
+        state.stationData = await getStationData(coords[0].lat, coords[0].lon);
 
-    if (lastClickedButton === "set-default") {
-      localStorage.setItem("stationData", JSON.stringify(state.stationData));
-      localStorage.setItem("location", JSON.stringify(state.location));
+        if (lastClickedButton === "set-default") {
+            localStorage.setItem("stationData", JSON.stringify(state.stationData));
+            localStorage.setItem("location", JSON.stringify(state.location));
+        }
+
+        fetchWeather();
+
+        // clear value after search
+        document.getElementById("cityInput").value = "";
+
+    } catch (err) {
+        console.error("Error setting default city:", err);
+        alert("Could not load weather for that city.");
     }
 
-    fetchWeather();
-
-    // clear value after search
-    document.getElementById("cityInput").value = "";
-
-  } catch (err) {
-    console.error("Error setting default city:", err);
-    alert("Could not load weather for that city.");
-  }
-
-  lastClickedButton = null; // reset
+    lastClickedButton = null; // reset
 });
 
 window.addEventListener("DOMContentLoaded", () => {
-  // handle location data storage
-  try {
-    const cachedStation = localStorage.getItem("stationData");
-    const cachedLocation = localStorage.getItem("location");
+    // handle location data storage
+    try {
+        const cachedStation = localStorage.getItem("stationData");
+        const cachedLocation = localStorage.getItem("location");
 
-    if (cachedStation && cachedLocation) {
-      state.stationData = JSON.parse(cachedStation);
-      state.location = JSON.parse(cachedLocation);
+        if (cachedStation && cachedLocation) {
+            state.stationData = JSON.parse(cachedStation);
+            state.location = JSON.parse(cachedLocation);
 
-      fetchWeather();
+            fetchWeather();
 
-    } else {
-      const locCard = document.getElementById("locationInfo");
-      locCard.append(
-        el("h2", { className: "card-content", textContent: "You have not selected a default city, please enter one..." })
-      );
+        } else {
+            const locCard = document.getElementById("locationInfo");
+            locCard.append(
+                el("h2", { className: "card-content", textContent: "You have not selected a default city, please enter one..." })
+            );
+        }
+    } catch (err) {
+        console.error(err);
+        localStorage.removeItem("stationData");
+        localStorage.removeItem("location");
     }
-  } catch (err) {
-    console.error(err);
-    localStorage.removeItem("stationData");
-    localStorage.removeItem("location");
-  }
 });
 
 document.querySelectorAll('.tab-button').forEach(button => {
-  button.addEventListener('click', () => {
-    const target = button.dataset.tab;
+    button.addEventListener('click', () => {
+        const target = button.dataset.tab;
 
-    // deactivate all
-    document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
-    document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+        // deactivate all
+        document.querySelectorAll('.tab-button').forEach(btn => btn.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
 
-    // activate selected
-    button.classList.add('active');
-    document.getElementById(target).classList.add('active');
-  });
+        // activate selected
+        button.classList.add('active');
+        document.getElementById(target).classList.add('active');
+    });
 });
 
 
