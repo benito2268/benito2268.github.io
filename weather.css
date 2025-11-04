@@ -53,6 +53,14 @@ form {
   background-color: #799fbf;
 }
 
+#smdate {
+    margin-left: 15px;
+    font-family: "IBM";
+    background-color: #2A2A3D;
+    color: #8FBC8F;
+    height: 20px;
+}
+
 .temp {
     color: #FFC966;
     font-size: 40px;
@@ -102,12 +110,18 @@ form {
   color: #8FBC8F;
 }
 
+#currentDetails {
+    min-width: 550px;
+} 
+
+
 /* === Tabs === */
 .tab-container {
   display: flex;
   justify-content: space-around;
   border-bottom: 2px solid #555566;
   margin-bottom: 10px;
+  align-items: left;
 }
 
 .tab-button {
@@ -213,6 +227,7 @@ form {
 }
 
 .card-button {
+  margin-left: 15px;
   font-family: "IBM";
   padding: 0.6rem 1rem;
   background-color: #FFC966;

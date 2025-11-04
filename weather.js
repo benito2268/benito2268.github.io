@@ -12,21 +12,39 @@ const state = {
     stationData : null,
     currentWeather : null,
     forecast : null,
+    astroData : null,
 };
 
 async function fetchWeather() {
-  const [current, forecast] = await Promise.all([
+  const [current, forecast, astro] = await Promise.all([
     getCurrentCond(state.stationData.name),
-    fetchForecast(state.stationData.forecastURL)
+    fetchForecast(state.stationData.forecastURL), 
+    getAstroData(new Date().toISOString().split('T')[0], state.location.lat, state.location.lon)
   ]);
 
   state.currentWeather = current;
   state.forecast = forecast;
+  state.astroData = astro;
 
   // actually do the population
   populateCurrentWeather();
   populateDailyForecast();
   populateCurrentDetails();
+
+
+  // add the event listener
+  document.getElementById("astroForm").addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    const dateInput = document.getElementById("smdate"); 
+
+    // re-fetch the astro data
+    const newData = await getAstroData(dateInput.value, state.location.lat, state.location.lon);
+    state.astroData = newData;
+
+    // re-update the display
+    updateAstro(dateInput.value);
+  });
 
   console.log("Weather data loaded:", state);
 }
@@ -66,24 +84,47 @@ async function populateCurrentWeather() {
       el("h3", {className: "aux-data", textContent: `Humidity: ${currWeather.relHum}%`}),
       el("h3", {className: "aux-data", textContent: `Dew Point: ${currWeather.dewpointF}°F`}),
       el("h3", {className: "aux-data", textContent: `Wind: ${currWeather.windDir} ${currWeather.windMph != 0 ? (currWeather.windMph + " MPH") : "Calm"}`}),
+      el("h3", {className: "aux-data", textContent: `Press: ${currWeather.pressInhg} inHg`}),
     );
 }
 
 function populateCurrentDetails(forecast) {
     // first populate the 'details' tab
     let detailTab = document.getElementById("details");
+    let aqitab = document.getElementById("aqitab");
+
+    const currCond = state.currentWeather;
+
+    detailTab.innerHTML = "";
+    aqitab.innerHTML = "";
 
     const firstEntry = state.forecast[0];
     const firstPeriod =
-        new Date(firstEntry.day.startTime) < new Date(firstEntry.night.startTime)
+        firstEntry.day
             ? firstEntry.day
             : firstEntry.night;
 
     detailTab.append(
-        el("p", { "classList": "card-content", "textContent": `${firstPeriod.detailedForecast}`}),
-        el("h2", { "classList": "aux-data", "textContent": `Visibility : ${state.currentWeather.vis} Mi` }),
+        el("div", { "id" : "detailsCol" }, [
+            el("p", { "classList": "card-content", "textContent": `${firstPeriod.detailedForecast}`}),
+            el("hr"),  
+        ]),
     );
 
+    aqitab.append(
+        el("div", { "id" : "aqiCol"}, [
+            el("h2", { "classList" : "card-title", "textContent" : "Air Quality: " }),
+            el("h2", { "classList" : "aux-data", "textContent" : `AQI:`, "style" : `display: inline-block;`}),
+            el("h2", { "classList" : "aux-data", "textContent" : `${currCond.aqi[0].AQI} - ${currCond.aqi[0].Category.Name}`, "style" : `display: inline-block; color: ${aqiColorMap[currCond.aqi[0].Category.Number]};`}),
+            el("h2", { "classList": "aux-data", "textContent": `${currCond.aqi[0].ParameterName}: ${currCond.aqi[0].AQI}` }),
+            el("h2", { "classList": "aux-data", "textContent": `${currCond.aqi[1].ParameterName}: ${currCond.aqi[1].AQI}` }),
+            el("img", {"src" : `images/weather/aqi_${currCond.aqi[0].Category.Number}.png`}),
+            el("h2", { "classList": "aux-data", "textContent": `Visibility : ${state.currentWeather.vis} Mi` }),
+        ]),
+    );
+
+    // populate the third 'sun and moon' tab
+    updateAstro(new Date().toISOString().split('T')[0]);
 }
 
 function genForcastCard(parentId, pair, cardEl) {
@@ -131,9 +172,56 @@ function genForcastCard(parentId, pair, cardEl) {
     }
 }
 
+function updateAstro(date) {
+    // update the sun and moon tab
+    const data = state.astroData;
+    const smcard = document.getElementById("sunmoon");
+
+    smcard.innerHTML = "";
+
+    console.log(data);
+
+    smcard.append(
+        el("form", {"id" : "astroForm"}, [
+            el("label", {"for" : "smdate", "classList" : "card-title", "textContent" : "Select a Date"}), 
+            el("input", {"type" : "date", "id" : "smdate"}),
+            el("button", {"type" : "sumbit", "classList" : "card-button", "innerText" : "Update"}),
+        ]),
+     
+        el("hr"),
+
+        el("h2", {"classList" : "card-title", "textContent" : "Sun"}),
+        el("img", {"classList" : "fcast-img", "src" : "images/weather/sun-rise-set.png"}),
+        el("p", {"classList" : "aux-data", "textContent" : `Sunrise: ${utcToLocal(data.sun.rise)} | Sunset: ${utcToLocal(data.sun.set)}`}),
+        el("hr"), 
+        el("h2", {"classList" : "card-title", "textContent" : "Moon"}),
+        el("img", {"classList" : "fcast-img", "src" : `images/weather/${moonPhaseImages[data.moon.phase] || "quarter.png"}`}),
+        el("p", {"classList" : "aux-data", "textContent" : `${data.moon.phase} | ${data.moon.fracillum} Illuminated`}),
+        el("p", {"classList" : "aux-data", "textContent" : `Moonrise: ${utcToLocal(data.moon.rise)} | Moonset: ${utcToLocal(data.moon.set)}`}),
+        el("h2", {"classList" : "aux-data", "textContent" : `Next Phase: ${data.moon.next_phase.name} on ${data.moon.next_phase.month}/${data.moon.next_phase.day}`}),
+    );
+}
+
 // =========================================================================
 // NWS API Helper Functions
 // =========================================================================
+
+function utcToLocal(utcTimeStr) {
+  if (!utcTimeStr) return null;
+
+  const [hours, minutes] = utcTimeStr.split(':').map(Number);
+  const now = new Date();
+  const utcDate = new Date(Date.UTC(
+    now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),
+    hours, minutes
+  ));
+
+  return utcDate.toLocaleTimeString([], {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true
+  });
+}
 
 async function getData(url) {
   try {
@@ -141,7 +229,9 @@ async function getData(url) {
 
     // check if the request succeeded
     if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
+        console.log(url);
+        console.log(response);
+        throw new Error(`HTTP error! status: ${response.status}`);
     }
 
     // unpack the JSON data
@@ -164,9 +254,16 @@ function getStationData(lat, lon) {
     return getData(`https://weather.benitobox.net/station?lat=${lat}&lon=${lon}`);
 }
 
+// get the sun and moon data
+function getAstroData(date, lat, lon) {
+    // use the benitobox weather api
+    return getData(`https://weather.benitobox.net/astro?lat=${lat}&lon=${lon}&date=${date}`);
+}
+
 // returns the current conditions
 async function getCurrentCond(station) {
     let rawData = {};
+    let aqiData = {};
 
     await fetch(`https://api.weather.gov/stations/${station}/observations/latest`)
     .then(resp => resp.json())
@@ -174,14 +271,23 @@ async function getCurrentCond(station) {
         rawData = data.properties;
     });
 
+    // get the AQI
+    await fetch(`https://weather.benitobox.net/aqi?lat=${state.location.lat}&lon=${state.location.lon}`)
+    .then(resp => resp.json())
+    .then(data => {
+        aqiData = data;
+    });
+
     const currCond = {
         tempF     : CtoF(rawData.temperature.value),
         dewpointF : CtoF(rawData.dewpoint.value),
         windMph   : KphToMph(rawData.windSpeed.value),
         windDir   : DegToCardinal(rawData.windDirection.value),
-        presMmhg  : PaToMmhg(rawData.barometricPressure.value),
+        pressInhg : PaToInhg(rawData.barometricPressure.value).toFixed(2),
         relHum    : Math.round(rawData.relativeHumidity.value * 10) / 10,
         vis       : MtoMi(rawData.visibility.value),
+
+        aqi       : aqiData,
 
         condition : rawData.textDescription,
         name      : rawData.stationName,
@@ -282,8 +388,8 @@ function DegToCardinal(deg) {
     return dirs[Math.round(deg / 22.5) % 16];
 }
 
-function PaToMmhg(pressPa) {
-     return (pressPa / 133.3);
+function PaToInhg(pressPa) {
+     return (pressPa / 3386);
 }
 
 function pickIconKey(forecastText, isNighttime) {
@@ -365,6 +471,27 @@ const weatherIconMap = [
   }
 ];
 
+const moonPhaseImages = {
+  "New Moon": "new_moon.png",
+  "Waxing Crescent": "quarter.png",
+  "First Quarter": "quarter.png",
+  "Waxing Gibbous": "gibbous.png",
+  "Full Moon": "full_moon.png",
+  "Waning Gibbous": "gibbous.png",
+  "Last Quarter": "quarter.png",
+  "Waning Crescent": "quarter.png"
+};
+
+const aqiColorMap = [
+    "#000000", // falback color (black)
+    "#20AD00", // green - good
+    "#FFD000", // yellow - moderate
+    "#FF9D00", // orange - USG
+    "#FF3700", // red - unhealthy
+    "#FB00FF", // purple - very unhealthy
+    "#910000", // deep red - hazardous
+];
+
 // =========================================================================
 // Setup function calls
 // =========================================================================
@@ -408,6 +535,7 @@ document.getElementById("defaultCityForm").addEventListener("submit", async (e) 
 });
 
 window.addEventListener("DOMContentLoaded", () => {
+  // handle location data storage
   try {
     const cachedStation = localStorage.getItem("stationData");
     const cachedLocation = localStorage.getItem("location");
@@ -444,3 +572,8 @@ document.querySelectorAll('.tab-button').forEach(button => {
     document.getElementById(target).classList.add('active');
   });
 });
+
+
+
+
+
